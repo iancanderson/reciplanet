@@ -57,6 +57,7 @@ model User {
     role          String?   @default("user")
     accounts      Account[]
     sessions      Session[]
+    recipes       Recipe[]
 }
 
 model VerificationToken {
@@ -65,4 +66,16 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Recipe {
+    id              String   @id @default(cuid())
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+    name            String
+    description     String?
+    ingredients     String?
+    instructions    String?
+    userId          String
+    user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
