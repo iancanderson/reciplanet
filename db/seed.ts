@@ -24,7 +24,7 @@ async function main() {
     },
   });
 
-  await prisma.user.upsert({
+  let c = await prisma.user.upsert({
     where: { email: "c@c.com" },
     update: {},
     create: {
@@ -33,6 +33,16 @@ async function main() {
       password: encryptedPassword,
     },
   });
+
+  await prisma.recipe.upsert({
+    where: { id: "Pizza" },
+    update: {},
+    create: {
+      name: "Pizza",
+      description: "A delicious pizza",
+      userId: c.id,
+    },
+  })
 }
 
 main()
