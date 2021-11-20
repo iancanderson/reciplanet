@@ -21,13 +21,13 @@ model Account {
     type                     String
     provider                 String
     providerAccountId        String
-    refresh_token            String? @db.VarChar(500)
-    access_token             String? @db.VarChar(500)
+    refresh_token            String?  @db.VarChar(500)
+    access_token             String?  @db.VarChar(500)
     refresh_token_expires_in Int?
     expires_at               Int?
     token_type               String?
     scope                    String?
-    id_token                 String? @db.Text
+    id_token                 String?  @db.Text
     session_state            String?
     oauth_token_secret       String?
     oauth_token              String?
@@ -69,15 +69,36 @@ model VerificationToken {
 }
 
 model Recipe {
-    id              String   @id @default(cuid())
-    createdAt       DateTime @default(now())
-    updatedAt       DateTime @updatedAt
-    name            String
-    description     String?
-    ingredients     String?
-    instructions    String?
-    userId          String
-    user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id                String             @id @default(cuid())
+    createdAt         DateTime           @default(now())
+    updatedAt         DateTime           @updatedAt
+    name              String
+    description       String?
+    instructions      String?
+    userId            String
+    user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+    recipeIngredients RecipeIngredient[]
+    ingredients       Ingredient[]
 
     @@unique([userId, name])
+}
+
+model Ingredient {
+    id                String             @id @default(cuid())
+    createdAt         DateTime           @default(now())
+    updatedAt         DateTime           @updatedAt
+    name              String
+    description       String?
+    recipeIngredients RecipeIngredient[]
+    recipes           Recipe[]
+}
+
+model RecipeIngredient {
+    id           String     @id @default(cuid())
+    createdAt    DateTime   @default(now())
+    updatedAt    DateTime   @updatedAt
+    recipeId     String
+    ingredientId String
+    recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+    ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 }
